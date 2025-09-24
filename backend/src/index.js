@@ -14,7 +14,9 @@ const cors = require('cors')
 // console.log("Hello")
 
 app.use(cors({
-    origin: 'dsa-deck-4vuvmb30s-adityadarade682005-8521s-projects.vercel.app',
+    origin:[ 'http://localhost:5173',
+      'https://dsa-deck.vercel.app'
+    ],
     credentials: true 
 }))
 
