@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const axiosClient =  axios.create({
-    baseURL: 'BacKend_URL',
+    baseURL: 'process.env.BacKend_URL',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json'
