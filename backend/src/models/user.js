@@ -31,6 +31,38 @@ const userSchema = new Schema({
         enum:['user','admin'],
         default: 'user'
     },
+    solvedEasy: {
+        type: Number,
+        default: 0
+    },
+    solvedMedium: {
+        type: Number,
+        default: 0
+    },
+    solvedHard: {
+        type: Number,
+        default: 0
+    },
+    totalSolved: {
+        type: Number,
+        default: 0
+    },
+    streakCount: {
+        type: Number,
+        default: 0
+    },
+    longestStreak: {
+        type: Number,
+        default: 0
+    },
+    lastSolvedAt: {
+        type: Date,
+        default: null
+    },
+    leaderboardScore: {
+        type: Number,
+        default: 0
+    },
     problemSolved:{
         type:[{
             type:Schema.Types.ObjectId,
