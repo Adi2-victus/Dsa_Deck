@@ -14,6 +14,8 @@ import AdminUpload from "./components/AdminUpload"
 import AdminUpdate from "./components/AdminUpdate";
 import AdminUpdateList from "./components/AdminUpdateList";
 import LandingPage from "./pages/LandingPage";
+import Leaderboard from "./pages/Leaderboard";
+import Analytics from "./pages/Analytics";
 
 function App(){
   
@@ -47,6 +49,8 @@ function App(){
       <Route path="/admin/delete" element={isAuthenticated && user?.role === 'admin' ? <AdminDelete /> : <Navigate to="/" />} />
       <Route path="/admin/video" element={isAuthenticated && user?.role === 'admin' ? <AdminVideo /> : <Navigate to="/" />} />
       <Route path="/admin/upload/:problemId" element={isAuthenticated && user?.role === 'admin' ? <AdminUpload /> : <Navigate to="/" />} />
+      <Route path="/leaderboard" element={isAuthenticated ? <Leaderboard /> : <Navigate to="/login" />} />
+      <Route path="/profile" element={isAuthenticated ? <Analytics /> : <Navigate to="/login" />} />
       <Route path="/problem/:problemId" element={<ProblemPage/>}></Route>
       
     </Routes>
