@@ -2,6 +2,54 @@ const Problem = require("../models/problem");
 const Submission = require("../models/submission");
 const User = require("../models/user");
 const {getLanguageById,submitBatch,submitToken} = require("../utils/problemUtility");
+const { SCORE_WEIGHTS } = require("./leaderboard");
+
+const getDayStart = (date) => {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+};
+
+const updateLeaderboardStats = async ({ user, problem, problemId, submissionId }) => {
+  const hasAcceptedBefore = await Submission.exists({
+    userId: user._id,
+    problemId,
+    status: "accepted",
+    _id: { $ne: submissionId },
+  });
+
+  // Only count first accepted solve per problem for leaderboard score.
+  if (hasAcceptedBefore) return;
+
+  const difficulty = (problem?.difficulty || "").toLowerCase();
+  if (difficulty === "easy") user.solvedEasy = (user.solvedEasy || 0) + 1;
+  if (difficulty === "medium") user.solvedMedium = (user.solvedMedium || 0) + 1;
+  if (difficulty === "hard") user.solvedHard = (user.solvedHard || 0) + 1;
+
+  user.totalSolved = (user.totalSolved || 0) + 1;
+
+  const now = new Date();
+  const today = getDayStart(now);
+  const prev = user.lastSolvedAt ? getDayStart(user.lastSolvedAt) : null;
+  const dayDiff = prev ? Math.round((today - prev) / (1000 * 60 * 60 * 24)) : null;
+
+  if (dayDiff === 0) {
+    // same day solve: keep streak
+  } else if (dayDiff === 1) {
+    user.streakCount = (user.streakCount || 0) + 1;
+  } else {
+    user.streakCount = 1;
+  }
+
+  user.longestStreak = Math.max(user.longestStreak || 0, user.streakCount || 0);
+  user.lastSolvedAt = now;
+
+  user.leaderboardScore =
+    (user.solvedEasy || 0) * SCORE_WEIGHTS.easy +
+    (user.solvedMedium || 0) * SCORE_WEIGHTS.medium +
+    (user.solvedHard || 0) * SCORE_WEIGHTS.hard +
+    (user.streakCount || 0) * SCORE_WEIGHTS.streak;
+};
 
 const submitCode = async (req,res)=>{
    
@@ -96,8 +144,17 @@ const submitCode = async (req,res)=>{
 
     if(!req.result.problemSolved.includes(problemId)){
       req.result.problemSolved.push(problemId);
-      await req.result.save();
+      
     }
+     if (status === "accepted") {
+      await updateLeaderboardStats({
+        user: req.result,
+        problem,
+        problemId,
+        submissionId: submittedResult._id,
+      });
+    }
+    await req.result.save();
     
     const accepted = (status == 'accepted')
     res.status(201).json({
