@@ -53,7 +53,13 @@ function ChatAi({problem}) {
                         key={index} 
                         className={`chat ${msg.role === "user" ? "chat-end" : "chat-start"}`}
                     >
-                        <div className="chat-bubble bg-base-200 text-base-content">
+                        <div
+                            className={`chat-bubble !opacity-100 border
+                                ${msg.role === 'user'
+                                    ? 'bg-emerald-500/15 text-emerald-100 border-emerald-500/20'
+                                    : 'bg-[#161618] text-[#e8e8ea] border-white/[0.07]'
+                                }`}
+                        >
                             {msg.parts[0].text}
                         </div>
                     </div>
@@ -62,17 +68,17 @@ function ChatAi({problem}) {
             </div>
             <form 
                 onSubmit={handleSubmit(onSubmit)} 
-                className="sticky bottom-0 p-4 bg-base-100 border-t"
+                className="sticky bottom-0 p-4 bg-[#111113]/95 border-t border-white/[0.07] backdrop-blur"
             >
                 <div className="flex items-center">
                     <input 
                         placeholder="Ask me anything" 
-                        className="input input-bordered flex-1" 
+                        className="input input-bordered flex-1 bg-[#161618] text-[#e8e8ea] border-white/[0.10] placeholder:text-zinc-600 focus:outline-none focus:border-emerald-500/30" 
                         {...register("message", { required: true, minLength: 2 })}
                     />
                     <button 
                         type="submit" 
-                        className="btn btn-ghost ml-2"
+                        className="btn btn-ghost ml-2 text-zinc-400 hover:text-zinc-200 hover:bg-white/5"
                         disabled={errors.message}
                     >
                         <Send size={20} />

@@ -81,7 +81,7 @@ const SubmissionHistory = ({ problemId }) => {
       ) : (
         <>
           <div className="overflow-x-auto">
-            <table className="table table-zebra w-full">
+            <table className="table w-full">
               <thead>
                 <tr>
                   <th>#</th>
@@ -96,7 +96,7 @@ const SubmissionHistory = ({ problemId }) => {
               </thead>
               <tbody>
                 {submissions.map((sub, index) => (
-                  <tr key={sub._id}>
+                  <tr key={sub._id} className="bg-transparent hover:bg-white/5">
                     <td>{index + 1}</td>
                     <td className="font-mono">{sub.language}</td>
                     <td>
